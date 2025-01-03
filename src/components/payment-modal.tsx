@@ -1,0 +1,279 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import Image from 'next/image'
+import axios from 'axios'
+import { ShieldCheckIcon, X } from 'lucide-react'
+import { toast } from 'sonner'
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+} from "@/components/ui/form"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { useAuthStore } from '@/store/auth'
+import { ROBUX_PACKAGES, PAYMENT_CARDS } from "@/lib/constants"
+
+const paymentSchema = z.object({
+    seri: z.string().min(1, 'Số seri không được để trống'),
+    cardCode: z.string().min(1, 'Mã thẻ không được để trống'),
+});
+
+interface PaymentModalProps {
+    selectedPackage: number | null;
+}
+
+export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) => {
+    const [packageDetails, setPackageDetails] = useState(ROBUX_PACKAGES[0])
+    const [cardPayment, setCardPayment] = useState<string | null>(null)
+    const [methodPayment, setMethodPayment] = useState<string | null>(null)
+
+    const [open, setOpen] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const { user } = useAuthStore()
+    const form = useForm({
+        resolver: zodResolver(paymentSchema),
+        defaultValues: {
+            seri: '',
+            cardCode: '',
+        },
+    });
+
+    useEffect(() => {
+        if (selectedPackage !== null) {
+            setPackageDetails(ROBUX_PACKAGES[selectedPackage])
+        }
+    }, [selectedPackage, form])
+
+
+    const handleCardClick = (cardId: string) => {
+        setCardPayment(cardId)
+    }
+
+    async function handleSubmit(values: { seri: string; cardCode: string }) {
+        try {
+            const isValid = await form.trigger();
+            if (!isValid) {
+                return;
+            }
+
+            setIsLoading(true);
+
+            const paymentData = {
+                loaithe: cardPayment?.toUpperCase(),
+                seri: values.seri,
+                mathe: values.cardCode,
+                menhgia: packageDetails.price,
+                idgame: cardPayment
+            };
+            const response = await axios.post('/api/payment', paymentData);
+
+            if (response.data.success) {
+                toast.success('Thanh toán thành công!');
+            } else {
+                toast.error('Thanh toán thất bại. Vui lòng thử lại.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('Không thể kết nối tới server.');
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+
+    return (
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button className="font-semibold" variant="destructive" size="lg" disabled={selectedPackage === null}>
+                    Thanh toán
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="pb-0 pt-0 overflow-y-auto overflow-x-hidden max-w-lg max-h-[80%] mx-auto">
+                <DialogHeader className="sticky top-0 bg-white border-b border-gray-300 pt-4 pb-2 z-50">
+                    <div className="text-2xl font-bold">
+                        <DialogTitle className="text-xl font-bold">Tóm tắt đơn hàng</DialogTitle>
+                        <div className="flex justify-start items-center gap-1">
+                            <ShieldCheckIcon className="w-3 h-3 text-green-500" />
+                            <p className='text-xs font-thin text-green-500'>Thông tin của bạn là riêng tư và an toàn.</p>
+                        </div>
+                    </div>
+                    <Button
+                        variant="ghost"
+                        className="absolute right-4 top-2 bg-gray-200 opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-full"
+                        onClick={() => setOpen(false)}
+                    >
+                        <X className="h-6 w-6" />
+                        <span className="sr-only">Close</span>
+                    </Button>
+                </DialogHeader>
+                <div className="max-w-md space-y-4">
+                    <div className="flex justify-between items-center">
+                        <div className="font-semibold text-xl">Tài Khoản:</div>
+                        <div className="flex justify-end items-center gap-1">
+                            <Avatar className="h-10 w-10">
+                                <AvatarFallback>
+                                    <Image src={user?.avatar ?? ""} alt="User Avatar" width={16} height={16} className="h-full w-full rounded-full object-contain object-center" />
+                                </AvatarFallback>
+                            </Avatar>
+                            <div>{user?.nickname || 'Chưa đăng nhập'}</div>
+                        </div>
+                    </div>
+                    <div className="h-[1px] bg-gray-300"></div>
+                    <div className="flex justify-between">
+                        <div className="font-semibold text-xl">Tổng Tiền:</div>
+                        <div className="font-semibold">
+                            {new Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                            }).format(packageDetails.price)}
+                        </div>
+                    </div>
+                    <div className="flex justify-between">
+                        <div className="text-sm">{packageDetails.amount.toLocaleString("en-US")} Robux</div>
+                        <div className="text-sm">
+                            {new Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                            }).format(packageDetails.price)}
+                        </div>
+                    </div>
+                    <div className="flex justify-between">
+                        <div className="text-sm">{packageDetails.bonus.toLocaleString("en-US")} Khuyến mãi</div>
+                        <div className="text-sm">
+                            {new Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                            }).format(0)}
+                        </div>
+                    </div>
+                    <div className="flex justify-between">
+                        <div className="text-sm">5,120 Robux Nhận từ nhiệm vụ</div>
+                        <div className="text-sm">
+                            {new Intl.NumberFormat("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                            }).format(0)}
+                        </div>
+                    </div>
+                    <div className="flex justify-between">
+                        <div className="font-semibold text-lg text-red-500">Tổng robux nhận được:</div>
+                        <div className="flex justify-end items-center gap-2">
+                            <p className="font-semibold text-lg text-red-500">{(packageDetails.amount + packageDetails.bonus + 5120).toLocaleString("en-US")}</p>
+                            <Image src="/xu.avif" alt="Robux" width={20} height={20} className="h-5 w-5" />
+                        </div>
+                    </div>
+                    <div className="h-[1px] bg-gray-300"></div>
+                    <div className="mt-4 space-y-4">
+                        <div className="text-xl font-semibold">Phương Thức Thanh Toán</div>
+                        <div className="flex flex-col gap-4">
+                            <div className="p-4 w-full rounded-md flex flex-col justify-start items-start gap-4 border border-black">
+                                <div className="flex justify-start items-center gap-2">
+                                    <input type="radio" onChange={() => setMethodPayment("card")} />
+                                    <p className="font-bold">Thẻ cào điện thoại</p>
+                                </div>
+                                {methodPayment === "card" &&
+                                    <div className="grid grid-cols-3 gap-4">
+                                        {PAYMENT_CARDS.map((card) => (
+                                            <div
+                                                key={card.id}
+                                                onClick={() => handleCardClick(card.id)}
+                                                className={`col-span-1 p-4 border rounded-md flex flex-col items-center justify-center cursor-pointer ${cardPayment === card.id ? 'border-blue-500' : 'border-gray-300'
+                                                    } hover:border-blue-500`}
+                                            >
+                                                <Image
+                                                    src={card.icon}
+                                                    alt={card.name}
+                                                    width={100}
+                                                    height={100}
+                                                    className="w-full object-contain"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                }
+                                {cardPayment && (
+                                    <Form {...form}>
+                                        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 bg-gray-100 p-4 rounded-md w-full">
+                                            <FormField
+                                                control={form.control}
+                                                name="seri"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="text-bold">Số Serial:</FormLabel>
+                                                        <FormControl>
+                                                            <input
+                                                                {...field}
+                                                                className="w-full p-2 border rounded-md"
+                                                                placeholder="Nhập số seri"
+                                                            />
+                                                        </FormControl>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="cardCode"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="text-bold">Mã Thẻ:</FormLabel>
+                                                        <FormControl>
+                                                            <input
+                                                                {...field}
+                                                                className="w-full p-2 border rounded-md"
+                                                                placeholder="Nhập mã thẻ"
+                                                            />
+                                                        </FormControl>
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <Button
+                                                type="submit"
+                                                variant="destructive"
+                                                className="w-full font-semibold"
+                                                disabled={isLoading}
+                                            >
+                                                {isLoading ? 'Đang xử lý...' : 'Nạp ngay'}
+                                            </Button>
+                                        </form>
+                                    </Form>
+                                )}
+                            </div>
+                            <div className="p-4 w-full rounded-md flex justify-start items-center gap-2 bg-gray-300 pointer-events-none opacity-50">
+                                <input type="radio" disabled />
+                                <p className="text-muted-foreground font-bold">Momo (Bảo trì)</p>
+                            </div>
+                            <div className="p-4 w-full rounded-md flex justify-start items-center gap-2 bg-gray-300 pointer-events-none opacity-50">
+                                <input type="radio" disabled />
+                                <p className="text-muted-foreground font-bold">Zalopay (Bảo trì)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-6">
+                        <Image
+                            src="/download.svg"
+                            alt="Secure Payment"
+                            width={100}
+                            height={100}
+                            className="h-14 w-14 mx-auto"
+                        />
+                    </div>
+                </div>
+            </DialogContent>
+        </Dialog>
+    )
+}
