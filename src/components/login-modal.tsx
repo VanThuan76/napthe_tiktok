@@ -33,7 +33,6 @@ const formSchema = z.object({
 
 export function LoginModal() {
     const [open, setOpen] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
     const setUser = useAuthStore((state) => state.setUser)
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -45,8 +44,6 @@ export function LoginModal() {
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            setIsLoading(true);
-
             const response = await axios.post('/api/roblox', { username: values.username });
 
             const userInfo = response.data?.data?.[0];
@@ -79,8 +76,6 @@ export function LoginModal() {
             } else {
                 toast.error('Không thể kết nối tới server. Vui lòng thử lại sau.');
             }
-        } finally {
-            setIsLoading(false);
         }
     }
 
