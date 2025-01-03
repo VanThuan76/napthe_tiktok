@@ -1,13 +1,24 @@
 'use client'
 
+import { useAuthStore } from '@/store/auth';
 import { useState, useEffect } from 'react'
 
 export function CountdownTimer() {
+    const { user } = useAuthStore();
+
     const [timeLeft, setTimeLeft] = useState({
-        hours: 1,
-        minutes: 47,
+        hours: user ? 0 : 1,
+        minutes: user ? 30 : 47,
         seconds: 53
-    })
+    });
+
+    useEffect(() => {
+        setTimeLeft({
+            hours: user ? 0 : 1,
+            minutes: user ? 30 : 47,
+            seconds: 53
+        });
+    }, [user]);
 
     useEffect(() => {
         const timer = setInterval(() => {

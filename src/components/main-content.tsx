@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuthStore } from "@/store/auth"
 import { PaymentModal } from "./payment-modal"
+import { LoginModal } from "./login-modal"
 
 const MainContent = () => {
     const { user } = useAuthStore();
@@ -24,7 +25,7 @@ const MainContent = () => {
                         <Image src="/xu.avif" alt="Robux" width={20} height={20} className="h-5 w-5" />
                     </div>
                 )}
-                <div className="flex items-center gap-4 bg-gray-200 p-4 rounded-sm">
+                <div className="w-fit flex items-center gap-4 bg-gray-200 p-4 rounded-sm">
                     {user ? (
                         <div className="w-fit flex justify-between items-start gap-4">
                             <div className="flex justify-start items-start gap-2">
@@ -51,7 +52,7 @@ const MainContent = () => {
                                     <User className="h-6 w-6" />
                                 </AvatarFallback>
                             </Avatar>
-                            <h2 className="text-lg font-semibold">Đăng nhập</h2>
+                            <LoginModal isMainContent={true} />
                         </>
                     )}
                 </div>
@@ -63,7 +64,7 @@ const MainContent = () => {
                 <div className="mt-6 rounded-lg bg-sky-100 px-4 py-2 animate-scale-up-down">
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col justify-start items-start gap-2">
-                            <div className="font-bold text-xl">Cơ hội nhận 5,000 Robux hôm nay đăng nhập để biết thêm chi tiết</div>
+                            <div className="font-bold text-xl">{user ? "Hoàn thành nhiệm vụ để nhận 5,120 Robux" : "Cơ hội nhận 5,000 Robux hôm nay đăng nhập để biết thêm chi tiết"}</div>
                             <CountdownTimer />
                         </div>
                         <Image

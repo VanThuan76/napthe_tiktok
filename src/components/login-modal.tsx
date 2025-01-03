@@ -31,7 +31,7 @@ const formSchema = z.object({
     username: z.string().min(1, 'Vui lòng nhập tài khoản Roblox'),
 })
 
-export function LoginModal() {
+export function LoginModal({ isMainContent = false }: { isMainContent?: boolean }) {
     const [open, setOpen] = useState(false)
     const setUser = useAuthStore((state) => state.setUser)
 
@@ -82,7 +82,7 @@ export function LoginModal() {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button variant="destructive">Đăng nhập</Button>
+                <Button variant={isMainContent ? "default" : "destructive"} className={isMainContent ? "bg-transparent hover:bg-transparent p-0 text-black/80 shadow-none text-xl font-bold" : ""}>Đăng nhập</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md overflow-y-auto">
                 <DialogHeader>
