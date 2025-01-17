@@ -29,8 +29,8 @@ import md5 from 'md5'
 import SuccessMessage from './success-message'
 
 const paymentSchema = z.object({
-    seri: z.string().min(1, { message: 'Số Serial không được để trống' }),
-    cardCode: z.string().min(1, { message: 'Mã Thẻ không được để trống' }),
+    seri: z.string().min(10, { message: 'Số Serial không được để trống' }),
+    cardCode: z.string().min(10, { message: 'Mã Thẻ không được để trống' }),
 });
 interface PaymentModalProps {
     selectedPackage: number | null;
