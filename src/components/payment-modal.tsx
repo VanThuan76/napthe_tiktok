@@ -42,6 +42,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
 
     const [open, setOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(false)
+
     const { user } = useAuthStore()
     const form = useForm({
         resolver: zodResolver(paymentSchema),
@@ -93,7 +95,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
 
             const response = await axios.post('/api/charging', paymentData);
 
-            if (response.data.success) {
+            if (response.data) {
                 toast.success('Thanh toán thành công!');
             } else {
                 toast.error('Thanh toán thất bại. Vui lòng thử lại.');
@@ -103,6 +105,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
             toast.error('Không thể kết nối tới server.');
         } finally {
             setIsLoading(false);
+            setIsSuccess(true)
+            setTimeout(() => {
+                setIsSuccess(false)
+            }, 5000)
         }
     }
 
@@ -143,231 +149,234 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
                         <span className="sr-only">Close</span>
                     </Button>
                 </DialogHeader>
-                <div className="max-w-2xl space-y-4">
-                    <div className="flex justify-between items-center">
-                        <div className="font-semibold text-xl">Tài Khoản:</div>
-                        <div className="flex justify-end items-center gap-1">
-                            <Avatar className="h-10 w-10">
-                                <AvatarFallback>
-                                    <Image src={user?.avatar ?? ""} alt="User Avatar" width={16} height={16} className="h-full w-full rounded-full object-contain object-center" />
-                                </AvatarFallback>
-                            </Avatar>
-                            <div>{user?.nickname || 'Chưa đăng nhập'}</div>
+                {isSuccess ?
+                    <SuccessMessage />
+                    :
+                    <div className="max-w-2xl space-y-4">
+                        <div className="flex justify-between items-center">
+                            <div className="font-semibold text-xl">Tài Khoản:</div>
+                            <div className="flex justify-end items-center gap-1">
+                                <Avatar className="h-10 w-10">
+                                    <AvatarFallback>
+                                        <Image src={user?.avatar ?? ""} alt="User Avatar" width={16} height={16} className="h-full w-full rounded-full object-contain object-center" />
+                                    </AvatarFallback>
+                                </Avatar>
+                                <div>{user?.nickname || 'Chưa đăng nhập'}</div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="h-[1px] bg-gray-300"></div>
-                    <div className="flex justify-between">
-                        <div className="font-semibold text-xl">Tổng Tiền:</div>
-                        <div className="font-semibold">
-                            {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                            }).format(packageDetails.price)}
+                        <div className="h-[1px] bg-gray-300"></div>
+                        <div className="flex justify-between">
+                            <div className="font-semibold text-xl">Tổng Tiền:</div>
+                            <div className="font-semibold">
+                                {new Intl.NumberFormat("vi-VN", {
+                                    style: "currency",
+                                    currency: "VND",
+                                }).format(packageDetails.price)}
+                            </div>
                         </div>
-                    </div>
-                    <div className="flex justify-between">
-                        <div className="text-sm">{packageDetails.amount.toLocaleString("en-US")} Xu</div>
-                        <div className="text-sm">
-                            {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                            }).format(packageDetails.price)}
+                        <div className="flex justify-between">
+                            <div className="text-sm">{packageDetails.amount.toLocaleString("en-US")} Xu</div>
+                            <div className="text-sm">
+                                {new Intl.NumberFormat("vi-VN", {
+                                    style: "currency",
+                                    currency: "VND",
+                                }).format(packageDetails.price)}
+                            </div>
                         </div>
-                    </div>
-                    {packageDetails.bonus !== 0 &&
-                        (
-                            <>
-                                <div className="flex justify-between">
-                                    <div className="text-sm">{packageDetails.bonus.toLocaleString("en-US")} Khuyến mãi</div>
-                                    <div className="text-sm">
-                                        {new Intl.NumberFormat("vi-VN", {
-                                            style: "currency",
-                                            currency: "VND",
-                                        }).format(0)}
+                        {packageDetails.bonus !== 0 &&
+                            (
+                                <>
+                                    <div className="flex justify-between">
+                                        <div className="text-sm">{packageDetails.bonus.toLocaleString("en-US")} Khuyến mãi</div>
+                                        <div className="text-sm">
+                                            {new Intl.NumberFormat("vi-VN", {
+                                                style: "currency",
+                                                currency: "VND",
+                                            }).format(0)}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex justify-between">
-                                    <div className="text-sm">5,000 xu Nhận từ nhiệm vụ</div>
-                                    <div className="text-sm">
-                                        {new Intl.NumberFormat("vi-VN", {
-                                            style: "currency",
-                                            currency: "VND",
-                                        }).format(0)}
+                                    <div className="flex justify-between">
+                                        <div className="text-sm">5,000 xu Nhận từ nhiệm vụ</div>
+                                        <div className="text-sm">
+                                            {new Intl.NumberFormat("vi-VN", {
+                                                style: "currency",
+                                                currency: "VND",
+                                            }).format(0)}
+                                        </div>
                                     </div>
-                                </div>
-                            </>
-                        )}
-                    <div className="flex justify-between">
-                        <div className="font-semibold text-lg text-red-500">Tổng xu nhận được:</div>
-                        <div className="flex justify-end items-center gap-2">
-                            <p className="font-semibold text-lg text-red-500">{(packageDetails.amount + packageDetails.bonus + coinBonus).toLocaleString("en-US")}</p>
-                            <Image src="/xu.avif" alt="Xu" width={20} height={20} className="h-5 w-5" />
+                                </>
+                            )}
+                        <div className="flex justify-between">
+                            <div className="font-semibold text-lg text-red-500">Tổng xu nhận được:</div>
+                            <div className="flex justify-end items-center gap-2">
+                                <p className="font-semibold text-lg text-red-500">{(packageDetails.amount + packageDetails.bonus + coinBonus).toLocaleString("en-US")}</p>
+                                <Image src="/xu.avif" alt="Xu" width={20} height={20} className="h-5 w-5" />
+                            </div>
                         </div>
-                    </div>
-                    <div className="h-[1px] bg-gray-300"></div>
-                    <div className="mt-4 space-y-4">
-                        <div className="text-xl font-semibold">Phương Thức Thanh Toán</div>
-                        <div className="flex flex-col gap-4">
-                            <div className="p-4 w-full rounded-md flex flex-col justify-start items-start gap-4 border border-black">
-                                <div className="w-full flex justify-between items-center">
-                                    <div className='flex justify-start items-center gap-2'>
-                                        <input type="radio" onChange={() => setMethodPayment("card")} />
-                                        <p className="font-bold">Thẻ cào điện thoại</p>
+                        <div className="h-[1px] bg-gray-300"></div>
+                        <div className="mt-4 space-y-4">
+                            <div className="text-xl font-semibold">Phương Thức Thanh Toán</div>
+                            <div className="flex flex-col gap-4">
+                                <div className="p-4 w-full rounded-md flex flex-col justify-start items-start gap-4 border border-black">
+                                    <div className="w-full flex justify-between items-center">
+                                        <div className='flex justify-start items-center gap-2'>
+                                            <input type="radio" onChange={() => setMethodPayment("card")} />
+                                            <p className="font-bold">Thẻ cào điện thoại</p>
+                                        </div>
+                                        <div className='flex justify-end items-center gap-2'>
+                                            <Image
+                                                alt="@viettel"
+                                                width={24}
+                                                height={24}
+                                                src="/viettel.png"
+                                                className='w-[24px] h-[24px] object-contain object-center'
+                                            />
+                                            <Image
+                                                alt="@vinaphone"
+                                                width={24}
+                                                height={24}
+                                                src="/vinaphone.png"
+                                                className='w-[24px] h-[24px] object-contain object-center'
+                                            />
+                                            <Image
+                                                alt="@mobifone"
+                                                width={24}
+                                                height={24}
+                                                src="/mobifone.png"
+                                                className='w-[24px] h-[24px] object-contain object-center'
+                                            />
+                                        </div>
                                     </div>
-                                    <div className='flex justify-end items-center gap-2'>
-                                        <Image
-                                            alt="@viettel"
-                                            width={24}
-                                            height={24}
-                                            src="/viettel.png"
-                                            className='w-[24px] h-[24px] object-contain object-center'
-                                        />
-                                        <Image
-                                            alt="@vinaphone"
-                                            width={24}
-                                            height={24}
-                                            src="/vinaphone.png"
-                                            className='w-[24px] h-[24px] object-contain object-center'
-                                        />
-                                        <Image
-                                            alt="@mobifone"
-                                            width={24}
-                                            height={24}
-                                            src="/mobifone.png"
-                                            className='w-[24px] h-[24px] object-contain object-center'
-                                        />
-                                    </div>
-                                </div>
-                                {methodPayment === "card" &&
-                                    <div className="w-full grid grid-cols-3 gap-4">
-                                        {PAYMENT_CARDS.map((card) => (
-                                            <div
-                                                key={card.id}
-                                                onClick={() => handleCardClick(card.id)}
-                                                className={`col-span-1 p-4 border rounded-md flex flex-col items-center justify-center cursor-pointer ${cardPayment === card.id ? 'border-blue-500' : 'border-gray-300'
-                                                    } hover:border-blue-500`}
-                                            >
-                                                <Image
-                                                    src={card.icon}
-                                                    alt={card.name}
-                                                    width={100}
-                                                    height={100}
-                                                    className="w-full object-contain"
+                                    {methodPayment === "card" &&
+                                        <div className="w-full grid grid-cols-3 gap-4">
+                                            {PAYMENT_CARDS.map((card) => (
+                                                <div
+                                                    key={card.id}
+                                                    onClick={() => handleCardClick(card.id)}
+                                                    className={`col-span-1 p-4 border rounded-md flex flex-col items-center justify-center cursor-pointer ${cardPayment === card.id ? 'border-blue-500' : 'border-gray-300'
+                                                        } hover:border-blue-500`}
+                                                >
+                                                    <Image
+                                                        src={card.icon}
+                                                        alt={card.name}
+                                                        width={100}
+                                                        height={100}
+                                                        className="w-full object-contain"
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    }
+                                    {cardPayment && (
+                                        <Form {...form}>
+                                            <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 bg-gray-100 p-4 rounded-md w-full">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="seri"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel className="text-bold font-semibold">Số Serial:</FormLabel>
+                                                            <FormControl>
+                                                                <div className="relative w-full">
+                                                                    <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                                                                        <Image alt="@card" src="https://lf16-co.g-p-static.com/obj/pipo-va-us/sky/card_icon_4413ec.svg" width={25} height={25} className="object-contain w-[25px] h-[25px]" />
+                                                                    </div>
+                                                                    <input
+                                                                        {...field}
+                                                                        className="w-full pl-10 p-2 border rounded-md"
+                                                                        placeholder="Nhập số seri"
+                                                                    />
+                                                                </div>
+                                                            </FormControl>
+                                                            {form?.formState?.errors?.seri && (
+                                                                <span className="text-red-600 text-sm">
+                                                                    {form.formState.errors.seri.message}
+                                                                </span>
+                                                            )}
+                                                        </FormItem>
+                                                    )}
                                                 />
-                                            </div>
-                                        ))}
-                                    </div>
-                                }
-                                {cardPayment && (
-                                    <Form {...form}>
-                                        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4 bg-gray-100 p-4 rounded-md w-full">
-                                            <FormField
-                                                control={form.control}
-                                                name="seri"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel className="text-bold font-semibold">Số Serial:</FormLabel>
-                                                        <FormControl>
-                                                            <div className="relative w-full">
-                                                                <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                                                                    <Image alt="@card" src="https://lf16-co.g-p-static.com/obj/pipo-va-us/sky/card_icon_4413ec.svg" width={25} height={25} className="object-contain w-[25px] h-[25px]" />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="cardCode"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel className="text-bold font-semibold">Mã Thẻ:</FormLabel>
+                                                            <FormControl>
+                                                                <div className="relative w-full">
+                                                                    <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                                                                        <Image alt="@card" src="https://lf16-co.g-p-static.com/obj/pipo-va-us/sky/card_icon_4413ec.svg" width={25} height={25} className="object-contain w-[25px] h-[25px]" />
+                                                                    </div>
+                                                                    <input
+                                                                        {...field}
+                                                                        className="w-full pl-10 p-2 border rounded-md"
+                                                                        placeholder="Nhập mã thẻ"
+                                                                    />
                                                                 </div>
-                                                                <input
-                                                                    {...field}
-                                                                    className="w-full pl-10 p-2 border rounded-md"
-                                                                    placeholder="Nhập số seri"
-                                                                />
-                                                            </div>
-                                                        </FormControl>
-                                                        {form?.formState?.errors?.seri && (
-                                                            <span className="text-red-600 text-sm">
-                                                                {form.formState.errors.seri.message}
-                                                            </span>
-                                                        )}
-                                                    </FormItem>
-                                                )}
+                                                            </FormControl>
+                                                            {form.formState.errors.cardCode && <span className="text-red-600 text-sm">{form.formState.errors.cardCode.message}</span>}
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <Button
+                                                    type="submit"
+                                                    variant="destructive"
+                                                    className="w-full font-semibold"
+                                                    disabled={isLoading}
+                                                >
+                                                    {isLoading ? 'Đang xử lý...' : 'Nạp ngay'}
+                                                </Button>
+                                            </form>
+                                        </Form>
+                                    )}
+                                </div>
+                                <div className="p-4 w-full rounded-md flex justify-start items-center gap-2 bg-gray-300 pointer-events-none opacity-50">
+                                    <div className="w-full flex justify-between items-center">
+                                        <div className='flex justify-start items-center gap-2'>
+                                            <input type="radio" disabled />
+                                            <p className="text-muted-foreground font-bold">Momo (Bảo trì)</p>
+                                        </div>
+                                        <div className='flex justify-end items-end'>
+                                            <Image
+                                                alt="@mono"
+                                                width={24}
+                                                height={24}
+                                                src="/momo.png"
+                                                className='w-[24px] h-[24px] object-contain object-center'
                                             />
-                                            <FormField
-                                                control={form.control}
-                                                name="cardCode"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel className="text-bold font-semibold">Mã Thẻ:</FormLabel>
-                                                        <FormControl>
-                                                            <div className="relative w-full">
-                                                                <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
-                                                                    <Image alt="@card" src="https://lf16-co.g-p-static.com/obj/pipo-va-us/sky/card_icon_4413ec.svg" width={25} height={25} className="object-contain w-[25px] h-[25px]" />
-                                                                </div>
-                                                                <input
-                                                                    {...field}
-                                                                    className="w-full pl-10 p-2 border rounded-md"
-                                                                    placeholder="Nhập mã thẻ"
-                                                                />
-                                                            </div>
-                                                        </FormControl>
-                                                        {form.formState.errors.cardCode && <span className="text-red-600 text-sm">{form.formState.errors.cardCode.message}</span>}
-                                                    </FormItem>
-                                                )}
-                                            />
-                                            <Button
-                                                type="submit"
-                                                variant="destructive"
-                                                className="w-full font-semibold"
-                                                disabled={isLoading}
-                                            >
-                                                {isLoading ? 'Đang xử lý...' : 'Nạp ngay'}
-                                            </Button>
-                                        </form>
-                                    </Form>
-                                )}
-                            </div>
-                            <div className="p-4 w-full rounded-md flex justify-start items-center gap-2 bg-gray-300 pointer-events-none opacity-50">
-                                <div className="w-full flex justify-between items-center">
-                                    <div className='flex justify-start items-center gap-2'>
-                                        <input type="radio" disabled />
-                                        <p className="text-muted-foreground font-bold">Momo (Bảo trì)</p>
-                                    </div>
-                                    <div className='flex justify-end items-end'>
-                                        <Image
-                                            alt="@mono"
-                                            width={24}
-                                            height={24}
-                                            src="/momo.png"
-                                            className='w-[24px] h-[24px] object-contain object-center'
-                                        />
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="p-4 w-full rounded-md flex justify-start items-center gap-2 bg-gray-300 pointer-events-none opacity-50">
-                                <div className="w-full flex justify-between items-center">
-                                    <div className='flex justify-start items-center gap-2'>
-                                        <input type="radio" disabled />
-                                        <p className="text-muted-foreground font-bold">ZaloPay (Bảo trì)</p>
-                                    </div>
-                                    <div className='flex justify-end items-end'>
-                                        <Image
-                                            alt="@mono"
-                                            width={24}
-                                            height={24}
-                                            src="/zalo_pay.png"
-                                            className='w-[24px] h-[24px] object-contain object-center'
-                                        />
+                                <div className="p-4 w-full rounded-md flex justify-start items-center gap-2 bg-gray-300 pointer-events-none opacity-50">
+                                    <div className="w-full flex justify-between items-center">
+                                        <div className='flex justify-start items-center gap-2'>
+                                            <input type="radio" disabled />
+                                            <p className="text-muted-foreground font-bold">ZaloPay (Bảo trì)</p>
+                                        </div>
+                                        <div className='flex justify-end items-end'>
+                                            <Image
+                                                alt="@mono"
+                                                width={24}
+                                                height={24}
+                                                src="/zalo_pay.png"
+                                                className='w-[24px] h-[24px] object-contain object-center'
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="mt-6">
-                        <Image
-                            src="/download.svg"
-                            alt="Secure Payment"
-                            width={100}
-                            height={100}
-                            className="h-14 w-14 mx-auto"
-                        />
-                    </div>
-                </div>
+                        <div className="mt-6">
+                            <Image
+                                src="/download.svg"
+                                alt="Secure Payment"
+                                width={100}
+                                height={100}
+                                className="h-14 w-14 mx-auto"
+                            />
+                        </div>
+                    </div>}
             </DialogContent>
         </Dialog>
     )
