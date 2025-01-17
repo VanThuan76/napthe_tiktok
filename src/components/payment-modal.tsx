@@ -51,6 +51,8 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
         },
     });
 
+    const coinBonus = packageDetails.bonus === 0 ? 0 : 5000;
+
     useEffect(() => {
         if (selectedPackage !== null) {
             setPackageDetails(TIKTOK_COIN_PACKAGES[selectedPackage])
@@ -172,28 +174,33 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
                             }).format(packageDetails.price)}
                         </div>
                     </div>
-                    <div className="flex justify-between">
-                        <div className="text-sm">{packageDetails.bonus.toLocaleString("en-US")} Khuyến mãi</div>
-                        <div className="text-sm">
-                            {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                            }).format(0)}
-                        </div>
-                    </div>
-                    <div className="flex justify-between">
-                        <div className="text-sm">5,000 xu Nhận từ nhiệm vụ</div>
-                        <div className="text-sm">
-                            {new Intl.NumberFormat("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                            }).format(0)}
-                        </div>
-                    </div>
+                    {packageDetails.bonus !== 0 &&
+                        (
+                            <>
+                                <div className="flex justify-between">
+                                    <div className="text-sm">{packageDetails.bonus.toLocaleString("en-US")} Khuyến mãi</div>
+                                    <div className="text-sm">
+                                        {new Intl.NumberFormat("vi-VN", {
+                                            style: "currency",
+                                            currency: "VND",
+                                        }).format(0)}
+                                    </div>
+                                </div>
+                                <div className="flex justify-between">
+                                    <div className="text-sm">5,000 xu Nhận từ nhiệm vụ</div>
+                                    <div className="text-sm">
+                                        {new Intl.NumberFormat("vi-VN", {
+                                            style: "currency",
+                                            currency: "VND",
+                                        }).format(0)}
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     <div className="flex justify-between">
                         <div className="font-semibold text-lg text-red-500">Tổng xu nhận được:</div>
                         <div className="flex justify-end items-center gap-2">
-                            <p className="font-semibold text-lg text-red-500">{(packageDetails.amount + packageDetails.bonus + 5120).toLocaleString("en-US")}</p>
+                            <p className="font-semibold text-lg text-red-500">{(packageDetails.amount + packageDetails.bonus + coinBonus).toLocaleString("en-US")}</p>
                             <Image src="/xu.avif" alt="Xu" width={20} height={20} className="h-5 w-5" />
                         </div>
                     </div>

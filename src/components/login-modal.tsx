@@ -6,8 +6,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import Image from 'next/image'
 import axios from 'axios'
-import { X } from 'lucide-react'
+import { X, User } from 'lucide-react'
 import { toast } from 'sonner'
+
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
     Dialog,
     DialogContent,
@@ -76,15 +78,24 @@ export function LoginModal({ isMainContent = false }: { isMainContent?: boolean 
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
+            <DialogTrigger>
+                <div className='flex justify-center items-center gap-2'>
+                {isMainContent ? (
+                    <Avatar className="h-10 w-10">
+                        <AvatarFallback>
+                            <User className="h-6 w-6" />
+                        </AvatarFallback>
+                    </Avatar>
+                ) : <></>}
                 <Button variant={isMainContent ? "default" : "destructive"} className={isMainContent ? "bg-transparent hover:bg-transparent p-0 text-black/80 shadow-none text-xl font-bold" : ""}>Đăng nhập</Button>
+                </div>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="text-xl text-center font-bold">Đăng nhập Tiktok</DialogTitle>
                     <Button
                         variant="ghost"
-                        className="absolute right-4 top-4 bg-gray-200 opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-full"
+                        className="absolute right-0 top-2 w-8 h-8 opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-full"
                         onClick={() => setOpen(false)}
                     >
                         <X className="h-6 w-6" />

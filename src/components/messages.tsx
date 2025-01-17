@@ -109,7 +109,7 @@ export function Messages() {
                     />
                     <Button
                         onClick={handleSendMessage}
-                        className="bg-sky-100 text-black font-semibold hover:bg-sky-200"
+                        className="bg-gradient-to-r from-[rgb(229,252,255)] to-[rgb(177,232,255)] text-black font-semibold hover:bg-sky-200"
                     >
                         Gửi
                     </Button>

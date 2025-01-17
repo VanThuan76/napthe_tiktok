@@ -1,7 +1,6 @@
 'use client'
 
 import Image from "next/image"
-import { User } from "lucide-react"
 import { useState } from 'react'
 import { TiktokCoinPackageCard } from "@/components/tiktok-coin-package"
 import { CountdownTimer } from "@/components/countdown-timer"
@@ -19,16 +18,16 @@ const MainContent = () => {
 
     return (
         <Card>
-            <CardContent className="relative p-6">
+            <CardContent className="relative p-3 md:p-6">
                 {user && (
                     <div className="mb-5 flex justify-start items-center gap-2">
                         <h1 className="text-2xl font-bold">Nạp Xu Tiktok</h1>
                         <Image src="/xu.avif" alt="Tiktok" width={20} height={20} className="h-5 w-5" />
                     </div>
                 )}
-                <div className="w-fit flex items-center gap-4 bg-gray-200 p-4 rounded-sm">
+                <div className="w-full md:w-fit flex items-center gap-4 bg-gray-200 p-4 rounded-sm">
                     {user ? (
-                        <div className="w-fit flex justify-between items-start gap-4">
+                        <div className="w-fit flex flex-col md:flex-row justify-between items-start gap-4">
                             <div className="flex justify-start items-start gap-2">
                                 <Avatar className="h-10 w-10">
                                     <AvatarFallback>
@@ -43,7 +42,7 @@ const MainContent = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="w-[1px] h-12 bg-black/50"></div>
+                            <div className="w-full md:w-[1px] h-[1px] md:h-12 bg-black/50"></div>
                             <div className="flex flex-col justify-start items-start">
                                 <p className="font-semibold">Nhiệm vụ nhận tiktok</p>
                                 <div className="flex items-center gap-1">
@@ -53,14 +52,7 @@ const MainContent = () => {
                             </div>
                         </div>
                     ) : (
-                        <>
-                            <Avatar className="h-10 w-10">
-                                <AvatarFallback>
-                                    <User className="h-6 w-6" />
-                                </AvatarFallback>
-                            </Avatar>
-                            <LoginModal isMainContent={true} />
-                        </>
+                        <LoginModal isMainContent={true} />
                     )}
                 </div>
 

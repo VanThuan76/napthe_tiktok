@@ -23,7 +23,7 @@ export function Header() {
                     <Image src="/logo_top.png" alt="Tiktok" width={100} height={300} className="h-8 object-contain object-center" />
                 </div>
 
-                <div className="flex w-full max-w-sm items-center gap-2">
+                <div className="w-full max-w-sm items-center gap-2 hidden md:flex">
                     <div className="relative flex-1">
                         <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input placeholder="Tìm kiếm" className="pl-8" />
