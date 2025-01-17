@@ -10,8 +10,8 @@ import { MessageCircle } from 'lucide-react'
 const SAMPLE_MESSAGES = [
     {
         id: '1',
-        username: 'TrangNapRobux.Com',
-        content: 'Bạn đã đăng nhập ngày để làm nhiệm vụ nhận robux từ TrangNapRobux.Com nhé',
+        username: 'TrangNapTiktok.Com',
+        content: 'Bạn đã đăng nhập ngày để làm nhiệm vụ nhận xu từ TrangNapTiktok.Com nhé',
         timestamp: 'vừa gửi',
         isUser: false,
     },
@@ -25,10 +25,10 @@ function generateRandomMessage() {
         'austinvu2*****',
     ];
     const randomContents = [
-        'Thực hiện nhiệm vụ nhanh chóng và nhận ngay Robux!',
-        'Cảm ơn TrangNapRobux, tôi đã nhận được Robux rất nhanh.',
+        'Thực hiện nhiệm vụ nhanh chóng và nhận ngay xu!',
+        'Cảm ơn TrangNapTiktok, tôi đã nhận được Xu rất nhanh.',
         'Dịch vụ uy tín và đáng tin cậy, rất hài lòng!',
-        'Robux đã về chỉ sau vài phút, cảm ơn đội ngũ!',
+        'Xu đã về chỉ sau vài phút, cảm ơn đội ngũ!',
     ];
     const randomUsername = randomUsernames[Math.floor(Math.random() * randomUsernames.length)];
     const randomContent = randomContents[Math.floor(Math.random() * randomContents.length)];
@@ -79,7 +79,7 @@ export function Messages() {
     return (
         <Card className="overflow-hidden">
             <CardHeader className="p-0 mb-2">
-                <CardTitle className="w-full p-4 flex items-center gap-2 bg-sky-100">
+                <CardTitle className="w-full p-4 flex items-center gap-2 bg-gradient-to-r from-[rgb(229,252,255)] to-[rgb(177,232,255)]">
                     <MessageCircle className="h-5 w-5" />
                     Tin nhắn từ người nạp
                 </CardTitle>

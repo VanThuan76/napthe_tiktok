@@ -70,3 +70,17 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes scaleUpDown {
+  0%,
+  100% {
+    transform: scale(0.9);
+  }
+  50% {
+    transform: scale(1);
+  }
+}
+
+.animate-scale-up-down {
+  animation: scaleUpDown 1.5s ease-in-out infinite;
+}

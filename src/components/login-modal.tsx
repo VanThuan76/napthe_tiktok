@@ -28,7 +28,7 @@ import { Button } from "@/components/ui/button"
 import { useAuthStore } from '@/store/auth'
 
 const formSchema = z.object({
-    username: z.string().min(1, 'Vui lòng nhập tài khoản Roblox'),
+    username: z.string().min(1, 'Vui lòng nhập tài khoản tiktok'),
 })
 
 export function LoginModal({ isMainContent = false }: { isMainContent?: boolean }) {
@@ -44,22 +44,17 @@ export function LoginModal({ isMainContent = false }: { isMainContent?: boolean 
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         try {
-            const response = await axios.post('/api/roblox', { username: values.username });
+            const response = await axios.post('https://dangnhapnapxutiktok.com/api/login', { username: values.username });
 
-            const userInfo = response.data?.data?.[0];
+            const userInfo = response.data?.data;
             if (!userInfo) {
-                toast.error('Tài khoản Roblox không tồn tại.');
+                toast.error('Tài khoản tiktok không tồn tại.');
                 return;
             }
 
-            const { id: userId, name: nickname } = userInfo;
+            const { id: userId, nickname, avatar } = userInfo;
 
-            const avatarResponse = await axios.get('/api/roblox/avatar', {
-                params: { userId },
-            });
-
-            const avatarUrl = avatarResponse.data?.imageUrl || '';
-            const userData = { userId, nickname, avatar: avatarUrl };
+            const userData = { userId, nickname, avatar };
 
             localStorage.setItem('userData', JSON.stringify(userData));
             setUser(userData);
@@ -86,7 +81,7 @@ export function LoginModal({ isMainContent = false }: { isMainContent?: boolean 
             </DialogTrigger>
             <DialogContent className="sm:max-w-md overflow-y-auto">
                 <DialogHeader>
-                    <DialogTitle className="text-xl text-center font-bold">Đăng nhập Roblox</DialogTitle>
+                    <DialogTitle className="text-xl text-center font-bold">Đăng nhập Tiktok</DialogTitle>
                     <Button
                         variant="ghost"
                         className="absolute right-4 top-4 bg-gray-200 opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-full"
@@ -104,10 +99,10 @@ export function LoginModal({ isMainContent = false }: { isMainContent?: boolean 
                             name="username"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="font-semibold">Tên Tài Khoản Roblox</FormLabel>
+                                    <FormLabel className="font-semibold">Tên Tài Khoản Tiktok</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Nhập tài khoản roblox của bạn"
+                                            placeholder="Nhập tài khoản tiktok của bạn"
                                             {...field}
                                         />
                                     </FormControl>
@@ -123,11 +118,11 @@ export function LoginModal({ isMainContent = false }: { isMainContent?: boolean 
                 </Form>
 
                 <div className="mt-4 space-y-4">
-                    <div className="text-base font-semibold">Hướng dẫn lấy tên tài khoản Roblox</div>
+                    <div className="text-base font-semibold">Hướng dẫn lấy tên tài khoản Tiktok</div>
                     <div className="relative aspect-video w-full overflow-hidden rounded-lg">
                         <Image
-                            src="/huongdan.jpg"
-                            alt="Hướng dẫn lấy username Roblox"
+                            src="/huongdan.png"
+                            alt="Hướng dẫn lấy username tiktok"
                             fill
                             className="object-cover"
                         />

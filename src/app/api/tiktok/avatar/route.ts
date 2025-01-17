@@ -10,21 +10,19 @@ export async function GET(request: Request) {
     }
 
     try {
-        const response = await axios.get('https://thumbnails.roblox.com/v1/users/avatar-headshot', {
-            params: {
-                userIds: userId,
-                size: '150x150',
-                format: 'Png',
-                isCircular: true,
+        const response = await axios.get(`https://open.tiktokapis.com/v2/user/avatar`, {
+            params: { user_id: userId },
+            headers: {
+                Authorization: `Bearer YOUR_ACCESS_TOKEN`,
             },
         });
 
-        const avatarData = response.data?.data?.[0];
+        const avatarData = response.data?.data;
         return NextResponse.json(avatarData || {});
     } catch (error: any) {
-        console.error('Roblox Avatar API error:', error.message);
+        console.error('TikTok Avatar API error:', error.message);
         return NextResponse.json(
-            { error: 'Lỗi khi gọi API Roblox Avatar.' },
+            { error: 'Lỗi khi gọi API TikTok Avatar.' },
             { status: 500 }
         );
     }

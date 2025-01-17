@@ -19,8 +19,8 @@ export function Header() {
     return (
         <header className="border-b">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
-                <div className="flex items-center gap-2">
-                    <Image src="/logo-top.png" alt="Roblox" width={300} height={300} className="h-8 object-contain object-center" />
+                <div className="flex justify-start items-center gap-2">
+                    <Image src="/logo_top.png" alt="Tiktok" width={100} height={300} className="h-8 object-contain object-center" />
                 </div>
 
                 <div className="flex w-full max-w-sm items-center gap-2">

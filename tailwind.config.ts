@@ -61,7 +61,7 @@ export default {
                 keyframes: {
                     scaleUpDown: {
                         '0%, 100%': { transform: 'scale(1)' },
-                        '50%': { transform: 'scale(1.05)' },
+                        '50%': { transform: 'scale(1.1)' }
                     },
                     fadeIn: {
                         "0%": { opacity: 0 },
@@ -70,7 +70,7 @@ export default {
                 },
                 animation: {
                     fadeIn: "fadeIn 0.5s ease-in-out",
-                    'scale-up-down': 'scaleUpDown 2s ease-in-out infinite',
+                    'scale-up-down': 'scaleUpDown 1.5s ease-in-out infinite',
                 }
             }
         }

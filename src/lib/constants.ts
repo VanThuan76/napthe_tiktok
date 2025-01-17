@@ -1,12 +1,12 @@
-import { RobuxPackage, PaymentMethod } from "@/types"
+import { TiktokCoinPackage, PaymentMethod } from "@/types"
 
-export const ROBUX_PACKAGES: RobuxPackage[] = [
-    { amount: 1280, bonus: 160, price: 50000 },
-    { amount: 2560, bonus: 1280, price: 100000 },
-    { amount: 5120, bonus: 2560, price: 200000 },
-    { amount: 7680, bonus: 5120, price: 300000 },
-    { amount: 12800, bonus: 10240, price: 500000 },
-    { amount: 26200, bonus: 26200, price: 1000000 },
+export const TIKTOK_COIN_PACKAGES: TiktokCoinPackage[] = [
+    { amount: 350, bonus: 0, price: 50000 },
+    { amount: 1450, bonus: 1450, price: 100000 },
+    { amount: 3700, bonus: 3700, price: 200000 },
+    { amount: 7600, bonus: 7600, price: 300000 },
+    { amount: 12800, bonus: 12800, price: 500000 },
+    { amount: 25200, bonus: 25200, price: 1000000 },
 ]
 
 export const PAYMENT_METHODS: PaymentMethod[] = [

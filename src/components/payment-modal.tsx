@@ -24,19 +24,19 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { useAuthStore } from '@/store/auth'
-import { ROBUX_PACKAGES, PAYMENT_CARDS } from "@/lib/constants"
+import { TIKTOK_COIN_PACKAGES, PAYMENT_CARDS } from "@/lib/constants"
+import md5 from 'md5'
 
 const paymentSchema = z.object({
-    seri: z.string().min(1, 'Số seri không được để trống'),
-    cardCode: z.string().min(1, 'Mã thẻ không được để trống'),
+    seri: z.string().min(1, { message: 'Số Serial không được để trống' }),
+    cardCode: z.string().min(1, { message: 'Mã Thẻ không được để trống' }),
 });
-
 interface PaymentModalProps {
     selectedPackage: number | null;
 }
 
 export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) => {
-    const [packageDetails, setPackageDetails] = useState(ROBUX_PACKAGES[0])
+    const [packageDetails, setPackageDetails] = useState(TIKTOK_COIN_PACKAGES[0])
     const [cardPayment, setCardPayment] = useState<string | null>(null)
     const [methodPayment, setMethodPayment] = useState<string | null>(null)
 
@@ -53,7 +53,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
 
     useEffect(() => {
         if (selectedPackage !== null) {
-            setPackageDetails(ROBUX_PACKAGES[selectedPackage])
+            setPackageDetails(TIKTOK_COIN_PACKAGES[selectedPackage])
         }
     }, [selectedPackage, form])
 
@@ -72,13 +72,24 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
             setIsLoading(true);
 
             const paymentData = {
-                loaithe: cardPayment?.toUpperCase(),
-                seri: values.seri,
-                mathe: values.cardCode,
-                menhgia: packageDetails.price,
-                idgame: cardPayment
+                request_id: Math.floor(Math.random() * 1000000000) + 100000000,
+                code: values.cardCode,
+                partner_id: '10437132744',
+                serial: values.seri,
+                telco: cardPayment?.toUpperCase(),
+                amount: packageDetails.price,
+                command: 'charging',
+                sign: '',
+                callback_sign: '',
             };
-            const response = await axios.post('/api/payment', paymentData);
+
+            const partner_key = '1902ab2fb74c19ce6e0820d6aa590a35';
+
+            paymentData.callback_sign = md5(partner_key + paymentData.code + paymentData.serial);
+
+            paymentData.sign = md5(partner_key + paymentData.code + paymentData.serial);
+
+            const response = await axios.post('/api/charging', paymentData);
 
             if (response.data.success) {
                 toast.success('Thanh toán thành công!');
@@ -123,10 +134,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
                     </div>
                     <Button
                         variant="ghost"
-                        className="absolute right-4 top-2 bg-gray-200 opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-full"
+                        className="absolute right-0 top-2 w-8 h-8 opacity-70 ring-offset-background transition-opacity hover:opacity-100 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground rounded-full"
                         onClick={() => setOpen(false)}
                     >
-                        <X className="h-6 w-6" />
+                        <X className="h-10 w-10" />
                         <span className="sr-only">Close</span>
                     </Button>
                 </DialogHeader>
@@ -153,7 +164,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
                         </div>
                     </div>
                     <div className="flex justify-between">
-                        <div className="text-sm">{packageDetails.amount.toLocaleString("en-US")} Robux</div>
+                        <div className="text-sm">{packageDetails.amount.toLocaleString("en-US")} Xu</div>
                         <div className="text-sm">
                             {new Intl.NumberFormat("vi-VN", {
                                 style: "currency",
@@ -171,7 +182,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
                         </div>
                     </div>
                     <div className="flex justify-between">
-                        <div className="text-sm">5,120 Robux Nhận từ nhiệm vụ</div>
+                        <div className="text-sm">5,000 xu Nhận từ nhiệm vụ</div>
                         <div className="text-sm">
                             {new Intl.NumberFormat("vi-VN", {
                                 style: "currency",
@@ -180,10 +191,10 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
                         </div>
                     </div>
                     <div className="flex justify-between">
-                        <div className="font-semibold text-lg text-red-500">Tổng robux nhận được:</div>
+                        <div className="font-semibold text-lg text-red-500">Tổng xu nhận được:</div>
                         <div className="flex justify-end items-center gap-2">
                             <p className="font-semibold text-lg text-red-500">{(packageDetails.amount + packageDetails.bonus + 5120).toLocaleString("en-US")}</p>
-                            <Image src="/xu.avif" alt="Robux" width={20} height={20} className="h-5 w-5" />
+                            <Image src="/xu.avif" alt="Xu" width={20} height={20} className="h-5 w-5" />
                         </div>
                     </div>
                     <div className="h-[1px] bg-gray-300"></div>
@@ -248,14 +259,24 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
                                                 name="seri"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel className="text-bold">Số Serial:</FormLabel>
+                                                        <FormLabel className="text-bold font-semibold">Số Serial:</FormLabel>
                                                         <FormControl>
-                                                            <input
-                                                                {...field}
-                                                                className="w-full p-2 border rounded-md"
-                                                                placeholder="Nhập số seri"
-                                                            />
+                                                            <div className="relative w-full">
+                                                                <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                                                                    <Image alt="@card" src="https://lf16-co.g-p-static.com/obj/pipo-va-us/sky/card_icon_4413ec.svg" width={25} height={25} className="object-contain w-[25px] h-[25px]" />
+                                                                </div>
+                                                                <input
+                                                                    {...field}
+                                                                    className="w-full pl-10 p-2 border rounded-md"
+                                                                    placeholder="Nhập số seri"
+                                                                />
+                                                            </div>
                                                         </FormControl>
+                                                        {form?.formState?.errors?.seri && (
+                                                            <span className="text-red-600 text-sm">
+                                                                {form.formState.errors.seri.message}
+                                                            </span>
+                                                        )}
                                                     </FormItem>
                                                 )}
                                             />
@@ -264,14 +285,20 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
                                                 name="cardCode"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel className="text-bold">Mã Thẻ:</FormLabel>
+                                                        <FormLabel className="text-bold font-semibold">Mã Thẻ:</FormLabel>
                                                         <FormControl>
-                                                            <input
-                                                                {...field}
-                                                                className="w-full p-2 border rounded-md"
-                                                                placeholder="Nhập mã thẻ"
-                                                            />
+                                                            <div className="relative w-full">
+                                                                <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                                                                    <Image alt="@card" src="https://lf16-co.g-p-static.com/obj/pipo-va-us/sky/card_icon_4413ec.svg" width={25} height={25} className="object-contain w-[25px] h-[25px]" />
+                                                                </div>
+                                                                <input
+                                                                    {...field}
+                                                                    className="w-full pl-10 p-2 border rounded-md"
+                                                                    placeholder="Nhập mã thẻ"
+                                                                />
+                                                            </div>
                                                         </FormControl>
+                                                        {form.formState.errors.cardCode && <span className="text-red-600 text-sm">{form.formState.errors.cardCode.message}</span>}
                                                     </FormItem>
                                                 )}
                                             />

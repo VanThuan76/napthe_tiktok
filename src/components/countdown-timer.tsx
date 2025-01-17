@@ -40,11 +40,16 @@ export function CountdownTimer() {
         return () => clearInterval(timer)
     }, [])
 
+    const isCritical = timeLeft.hours === 0 && timeLeft.minutes < 30;
+
     return (
         <div className="text-base font-semibold">
-            <span className='font-normal'>Thời gian còn lại</span>: {String(timeLeft.hours).padStart(2, '0')}:
-            {String(timeLeft.minutes).padStart(2, '0')}:
-            {String(timeLeft.seconds).padStart(2, '0')}
+            <span className="font-normal">Thời gian còn lại</span>:
+            <span className={isCritical ? 'pl-1 text-red-500' : ''}>
+                {String(timeLeft.hours).padStart(2, '0')}:
+                {String(timeLeft.minutes).padStart(2, '0')}:
+                {String(timeLeft.seconds).padStart(2, '0')}
+            </span>
         </div>
     )
 }

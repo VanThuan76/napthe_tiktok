@@ -15,30 +15,30 @@ const geistMono = Geist_Mono({
 
 
 export const metadata: Metadata = {
-    title: "Nạp thẻ Roblox - Nạp Robux chính hãng",
-    description: "Nạp thẻ Roblox nhanh chóng, uy tín, và an toàn. Cung cấp dịch vụ nạp Robux chính hãng với giá tốt nhất. Hỗ trợ khách hàng 24/7.",
-    keywords: ["nạp thẻ Roblox", "nạp Robux", "mua Robux giá rẻ", "dịch vụ nạp Roblox", "Robux uy tín"],
+    title: "Nạp thẻ Tiktok - Nạp xu chính hãng",
+    description: "Nạp thẻ Tiktok nhanh chóng, uy tín, và an toàn. Cung cấp dịch vụ nạp xu chính hãng với giá tốt nhất. Hỗ trợ khách hàng 24/7.",
+    keywords: ["nạp thẻ Tiktok", "nạp Tiktok", "mua xu Tiktok giá rẻ", "dịch vụ nạp Tiktok", "Tiktok uy tín"],
     openGraph: {
-        title: "Nạp thẻ Roblox - Nạp Robux chính hãng",
-        description: "Nạp thẻ Roblox nhanh chóng, uy tín, và an toàn. Cung cấp dịch vụ nạp Robux chính hãng với giá tốt nhất. Hỗ trợ khách hàng 24/7.",
-        url: "https://naptherobux.org",
+        title: "Nạp thẻ Tiktok - Nạp Xu chính hãng",
+        description: "Nạp thẻ Tiktok nhanh chóng, uy tín, và an toàn. Cung cấp dịch vụ nạp Xu chính hãng với giá tốt nhất. Hỗ trợ khách hàng 24/7.",
+        url: "https://naptheTiktok.org",
         images: [
             {
-                url: "/logo_roblox.jpg",
+                url: "/logo_tiktok.webp",
                 width: 800,
                 height: 600,
-                alt: "Nạp thẻ Roblox Logo",
+                alt: "Nạp thẻ Tiktok Logo",
             },
         ],
     },
     twitter: {
         card: "summary_large_image",
-        title: "Nạp thẻ Roblox - Nạp Robux chính hãng",
-        description: "Nạp thẻ Roblox nhanh chóng, uy tín, và an toàn. Cung cấp dịch vụ nạp Robux chính hãng với giá tốt nhất. Hỗ trợ khách hàng 24/7.",
-        images: ["/logo_roblox.jpg"],
+        title: "Nạp thẻ Tiktok - Nạp Xu chính hãng",
+        description: "Nạp thẻ Tiktok nhanh chóng, uy tín, và an toàn. Cung cấp dịch vụ nạp Xu chính hãng với giá tốt nhất. Hỗ trợ khách hàng 24/7.",
+        images: ["/logo_tiktok.webp"],
     },
     icons: {
-        icon: "/logo_roblox.jpg",
+        icon: "/logo_tiktok.webp",
     },
 };
 

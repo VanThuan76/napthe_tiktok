@@ -1,4 +1,4 @@
-export interface RobuxPackage {
+export interface TiktokCoinPackage {
     amount: number
     bonus: number
     price: number

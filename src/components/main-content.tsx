@@ -3,14 +3,15 @@
 import Image from "next/image"
 import { User } from "lucide-react"
 import { useState } from 'react'
-import { RobuxPackageCard } from "@/components/robux-package"
+import { TiktokCoinPackageCard } from "@/components/tiktok-coin-package"
 import { CountdownTimer } from "@/components/countdown-timer"
-import { ROBUX_PACKAGES, PAYMENT_METHODS } from "@/lib/constants"
+import { TIKTOK_COIN_PACKAGES, PAYMENT_METHODS } from "@/lib/constants"
 import { Card, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { useAuthStore } from "@/store/auth"
 import { PaymentModal } from "./payment-modal"
 import { LoginModal } from "./login-modal"
+import TiktokCoin from "./tiktok-coin"
 
 const MainContent = () => {
     const { user } = useAuthStore();
@@ -21,8 +22,8 @@ const MainContent = () => {
             <CardContent className="relative p-6">
                 {user && (
                     <div className="mb-5 flex justify-start items-center gap-2">
-                        <h1 className="text-2xl font-bold">Nạp Robux Bằng Thẻ Cào</h1>
-                        <Image src="/xu.avif" alt="Robux" width={20} height={20} className="h-5 w-5" />
+                        <h1 className="text-2xl font-bold">Nạp Xu Tiktok</h1>
+                        <Image src="/xu.avif" alt="Tiktok" width={20} height={20} className="h-5 w-5" />
                     </div>
                 )}
                 <div className="w-fit flex items-center gap-4 bg-gray-200 p-4 rounded-sm">
@@ -34,14 +35,20 @@ const MainContent = () => {
                                         <Image src={user.avatar} alt="User Avatar" width={40} height={40} className="h-full w-full rounded-full" />
                                     </AvatarFallback>
                                 </Avatar>
-                                <p>{user.nickname}</p>
+                                <div className="flex flex-col justify-start items-start">
+                                    <p>{user.nickname}</p>
+                                    <div className="flex justify-start items-center gap-1">
+                                        <TiktokCoin className="w-[16px] h-[16px]" />
+                                        <p className="text-sm text-muted-foreground">0</p>
+                                    </div>
+                                </div>
                             </div>
                             <div className="w-[1px] h-12 bg-black/50"></div>
                             <div className="flex flex-col justify-start items-start">
-                                <p className="font-semibold">Nhiệm vụ nhận robux</p>
+                                <p className="font-semibold">Nhiệm vụ nhận tiktok</p>
                                 <div className="flex items-center gap-1">
-                                    <span className="text-sm text-muted-foreground">Bạn đã hoàn thành: 0/2,560</span>
-                                    <Image src="/xu.avif" alt="Robux" width={10} height={10} className="h-3 w-3" />
+                                    <span className="text-sm text-muted-foreground">Bạn đã hoàn thành: 0/1,450</span>
+                                    <Image src="/xu.avif" alt="Tiktok" width={10} height={10} className="h-3 w-3" />
                                 </div>
                             </div>
                         </div>
@@ -58,13 +65,13 @@ const MainContent = () => {
                 </div>
 
                 <div className="mt-4 text-base text-black font-bold">
-                    Nạp tiền: <strong className="text-red-500">Hệ thống xử lý thẻ cào nhanh chóng! Robux cộng vào tài khoản chỉ 1 Phút</strong>.
+                    Nạp tiền: <strong className="text-red-500">Hệ thống xử lý thẻ cào nhanh chóng và cộng xu trong vòng 3 giây</strong>.
                 </div>
 
-                <div className="mt-6 rounded-lg bg-sky-100 px-4 py-2 animate-scale-up-down">
+                <div className="mt-6 rounded-lg bg-gradient-to-r from-[rgb(229,252,255)] to-[rgb(177,232,255)] px-4 py-2 animate-scale-up-down">
                     <div className="flex items-center justify-between">
                         <div className="flex flex-col justify-start items-start gap-2">
-                            <div className="font-bold text-xl">{user ? "Hoàn thành nhiệm vụ để nhận 5,120 Robux" : "Cơ hội nhận 5,000 Robux hôm nay đăng nhập để biết thêm chi tiết"}</div>
+                            <div className="font-bold text-xl">{user ? "Hoàn thành nhiệm vụ để nhận 5,000 xu" : "Cơ hội nhận 5,000 Tiktok hôm nay đăng nhập để biết thêm chi tiết"}</div>
                             <CountdownTimer />
                         </div>
                         <Image
@@ -78,8 +85,8 @@ const MainContent = () => {
                 </div>
 
                 <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3">
-                    {ROBUX_PACKAGES.map((pkg, index) => (
-                        <RobuxPackageCard
+                    {TIKTOK_COIN_PACKAGES.map((pkg, index) => (
+                        <TiktokCoinPackageCard
                             key={pkg.amount}
                             package={pkg}
                             selected={selectedPackage === index}
@@ -109,7 +116,7 @@ const MainContent = () => {
                         <div className="text-sm">Tổng tiền</div>
                         <div className="text-2xl font-bold">
                             đ{selectedPackage !== null
-                                ? ROBUX_PACKAGES[selectedPackage].price.toLocaleString()
+                                ? TIKTOK_COIN_PACKAGES[selectedPackage].price.toLocaleString()
                                 : '0'}
                         </div>
                     </div>

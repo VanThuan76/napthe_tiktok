@@ -10,15 +10,20 @@ export async function POST(request: Request) {
         }
 
         const response = await axios.post(
-            'https://users.roblox.com/v1/usernames/users',
-            { usernames: [username] }
+            'https://open.tiktokapis.com/v2/user/profile',
+            { username },
+            {
+                headers: {
+                    Authorization: `YmjxqBiX3nxLP3tB3FWao9Nih0Sip7cD`,
+                },
+            }
         );
 
         return NextResponse.json(response.data);
     } catch (error: any) {
-        console.error('Roblox API error:', error.message);
+        console.error('TikTok API error:', error.message);
         return NextResponse.json(
-            { error: 'Lỗi khi gọi API Roblox.' },
+            { error: 'Lỗi khi gọi API TikTok.' },
             { status: 500 }
         );
     }

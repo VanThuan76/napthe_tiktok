@@ -1,0 +1,2 @@
+[2025-01-17T06:45:52.957Z] {"request_id":292867648,"code":"618562495050754","partner_id":"10437132744","serial":"10010542501915","telco":"VIETTEL","amount":500000,"command":"charging","sign":"2c7648a778d16c730a7610dc674d58bc"}
+[2025-01-17T06:48:09.793Z] {"request_id":607870483,"code":"618562495050754","partner_id":"10437132744","serial":"10010542501915","telco":"VIETTEL","amount":500000,"command":"charging","sign":"2c7648a778d16c730a7610dc674d58bc","callback_sign":"2c7648a778d16c730a7610dc674d58bc"}
