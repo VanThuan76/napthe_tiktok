@@ -8,15 +8,15 @@ export function CountdownTimer() {
 
     const [timeLeft, setTimeLeft] = useState({
         hours: user ? 0 : 1,
-        minutes: user ? 30 : 47,
-        seconds: 53
+        minutes: user ? 29 : 47,
+        seconds: 59
     });
 
     useEffect(() => {
         setTimeLeft({
             hours: user ? 0 : 1,
-            minutes: user ? 30 : 47,
-            seconds: 53
+            minutes: user ? 29 : 47,
+            seconds: 59
         });
     }, [user]);
 

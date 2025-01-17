@@ -62,9 +62,14 @@ export default {
                     scaleUpDown: {
                         '0%, 100%': { transform: 'scale(1)' },
                         '50%': { transform: 'scale(1.05)' },
-                    }
+                    },
+                    fadeIn: {
+                        "0%": { opacity: 0 },
+                        "100%": { opacity: 1 },
+                    },
                 },
                 animation: {
+                    fadeIn: "fadeIn 0.5s ease-in-out",
                     'scale-up-down': 'scaleUpDown 2s ease-in-out infinite',
                 }
             }

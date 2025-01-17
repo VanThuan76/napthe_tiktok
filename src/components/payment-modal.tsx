@@ -13,7 +13,6 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import {
     Form,
@@ -97,12 +96,23 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button className="font-semibold" variant="destructive" size="lg" disabled={selectedPackage === null}>
-                    Thanh toán
-                </Button>
-            </DialogTrigger>
-            <DialogContent className="pb-0 pt-0 overflow-y-auto overflow-x-hidden max-w-lg max-h-[80%] mx-auto">
+            <Button
+                className="font-semibold"
+                variant="destructive"
+                size="lg"
+                disabled={selectedPackage === null}
+                onClick={() => {
+                    const userData = localStorage.getItem('userData');
+                    if (!userData) {
+                        toast.error('Bạn cần đăng nhập để thanh toán!');
+                        return;
+                    }
+                    setOpen(true);
+                }}
+            >
+                Thanh toán
+            </Button>
+            <DialogContent className="pb-0 pt-0 overflow-y-auto overflow-x-hidden max-w-2xl max-h-[80%] mx-auto">
                 <DialogHeader className="sticky top-0 bg-white border-b border-gray-300 pt-4 pb-2 z-50">
                     <div className="text-2xl font-bold">
                         <DialogTitle className="text-xl font-bold">Tóm tắt đơn hàng</DialogTitle>
@@ -120,7 +130,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
                         <span className="sr-only">Close</span>
                     </Button>
                 </DialogHeader>
-                <div className="max-w-md space-y-4">
+                <div className="max-w-2xl space-y-4">
                     <div className="flex justify-between items-center">
                         <div className="font-semibold text-xl">Tài Khoản:</div>
                         <div className="flex justify-end items-center gap-1">
@@ -181,12 +191,37 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
                         <div className="text-xl font-semibold">Phương Thức Thanh Toán</div>
                         <div className="flex flex-col gap-4">
                             <div className="p-4 w-full rounded-md flex flex-col justify-start items-start gap-4 border border-black">
-                                <div className="flex justify-start items-center gap-2">
-                                    <input type="radio" onChange={() => setMethodPayment("card")} />
-                                    <p className="font-bold">Thẻ cào điện thoại</p>
+                                <div className="w-full flex justify-between items-center">
+                                    <div className='flex justify-start items-center gap-2'>
+                                        <input type="radio" onChange={() => setMethodPayment("card")} />
+                                        <p className="font-bold">Thẻ cào điện thoại</p>
+                                    </div>
+                                    <div className='flex justify-end items-center gap-2'>
+                                        <Image
+                                            alt="@viettel"
+                                            width={24}
+                                            height={24}
+                                            src="/viettel.png"
+                                            className='w-[24px] h-[24px] object-contain object-center'
+                                        />
+                                        <Image
+                                            alt="@vinaphone"
+                                            width={24}
+                                            height={24}
+                                            src="/vinaphone.png"
+                                            className='w-[24px] h-[24px] object-contain object-center'
+                                        />
+                                        <Image
+                                            alt="@mobifone"
+                                            width={24}
+                                            height={24}
+                                            src="/mobifone.png"
+                                            className='w-[24px] h-[24px] object-contain object-center'
+                                        />
+                                    </div>
                                 </div>
                                 {methodPayment === "card" &&
-                                    <div className="grid grid-cols-3 gap-4">
+                                    <div className="w-full grid grid-cols-3 gap-4">
                                         {PAYMENT_CARDS.map((card) => (
                                             <div
                                                 key={card.id}
@@ -253,12 +288,38 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ selectedPackage }) =
                                 )}
                             </div>
                             <div className="p-4 w-full rounded-md flex justify-start items-center gap-2 bg-gray-300 pointer-events-none opacity-50">
-                                <input type="radio" disabled />
-                                <p className="text-muted-foreground font-bold">Momo (Bảo trì)</p>
+                                <div className="w-full flex justify-between items-center">
+                                    <div className='flex justify-start items-center gap-2'>
+                                        <input type="radio" disabled />
+                                        <p className="text-muted-foreground font-bold">Momo (Bảo trì)</p>
+                                    </div>
+                                    <div className='flex justify-end items-end'>
+                                        <Image
+                                            alt="@mono"
+                                            width={24}
+                                            height={24}
+                                            src="/momo.png"
+                                            className='w-[24px] h-[24px] object-contain object-center'
+                                        />
+                                    </div>
+                                </div>
                             </div>
                             <div className="p-4 w-full rounded-md flex justify-start items-center gap-2 bg-gray-300 pointer-events-none opacity-50">
-                                <input type="radio" disabled />
-                                <p className="text-muted-foreground font-bold">Zalopay (Bảo trì)</p>
+                                <div className="w-full flex justify-between items-center">
+                                    <div className='flex justify-start items-center gap-2'>
+                                        <input type="radio" disabled />
+                                        <p className="text-muted-foreground font-bold">ZaloPay (Bảo trì)</p>
+                                    </div>
+                                    <div className='flex justify-end items-end'>
+                                        <Image
+                                            alt="@mono"
+                                            width={24}
+                                            height={24}
+                                            src="/zalo_pay.png"
+                                            className='w-[24px] h-[24px] object-contain object-center'
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
