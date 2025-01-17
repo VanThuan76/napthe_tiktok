@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button"
 import { useAuthStore } from '@/store/auth'
 import { TIKTOK_COIN_PACKAGES, PAYMENT_CARDS } from "@/lib/constants"
 import md5 from 'md5'
+import SuccessMessage from './success-message'
 
 const paymentSchema = z.object({
     seri: z.string().min(1, { message: 'Số Serial không được để trống' }),
